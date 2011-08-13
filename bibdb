@@ -1,0 +1,186 @@
+#!/bin/bash
+#
+# bibdb
+#
+# Command-line script for the translation of bibliographic items from BibTeX
+# to DocBook XML.
+#
+# version 0.1
+#
+# Sylvain Schmitz <schmitz@i3s.unice.fr>
+# Copyright (c) Laboratoire I3S -- http://www.i3s.unice.fr
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to
+# deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+# AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+def_enc="utf8"
+preamble=""
+
+# Command-line treatment
+ERROR=65
+
+usage ()
+{
+    echo "Translate BibTeX bibliographic entries to DocBook XML."
+    echo "Usage: `basename $0` [-e encoding] [-p preamble] file"
+    echo "  -e    Specify the encoding used as in iconv(1)."
+    echo "        Defaults to $def_enc."
+    echo "  -p    Add a preamble to the generated file."
+    echo "        For example -p \"<\\!DOCTYPE bibliography PUBLIC \\\"-//OASIS/... >\"."
+    echo "  file  If 'file' is a LaTeX generated .aux file or a LaTeX .tex file, only"
+    echo "        generate entries for those present in the LaTeX source."
+    echo "        If 'file' is a DocBook .xml file, only generate entries for those"
+    echo "        present in the DocBook file. It looks for .bib files in the directory"
+    echo "        holding 'file'."
+    echo "        If 'file' is a BibTeX .bib file, generate entries for the entire"
+    echo "        bibliography file."
+}
+
+error ()
+{
+    echo "`basename $0`: $@" >&2
+    usage
+    exit $ERROR
+}
+
+if [ $# -eq 0 ]
+    then
+    error "Missing file name."
+fi
+
+while getopts ":e:p:" Option
+  do
+  case $Option in
+      e ) encoding=$OPTARG;;
+      p ) preamble=$OPTARG;;
+      - ) break;;
+      * ) error "Unknown option $Option.";;
+  esac
+done
+shift $(($OPTIND - 1))
+
+if [ $# -eq 0 ]
+    then
+    error "Missing file name."
+fi
+file="$1"
+if [ ! -f "$file" ]
+    then
+    if [ ! -f "$file.aux" ]
+        then
+        if [ ! -f "$file.tex" ]
+            then
+            error "Unknown file $file"
+        else
+            file="$file.tex"
+        fi
+    else
+        file="$file.aux"
+    fi
+fi
+
+ext="`echo \"$file\" | tail -c4`"
+dir="`dirname $file`"
+file="`basename $file`"
+auxfile="bibdb.aux"
+bblfile="bibdb.bbl"
+
+cd $dir
+
+# generating the correct .aux file
+case $ext in
+    #-------
+    # case of an already generated .aux file
+    aux )
+        sed s/bibstyle{.\*}/bibstyle{dbalpha}/g $file > $auxfile;;
+
+    #-------
+    # case of a .tex file: call LaTeX and process the resulting .aux file
+    tex )
+        latex $file > /dev/null\
+        && sed s/bibstyle{.\*}/bibstyle{dbalpha}/g\
+        `echo "$file" | sed s/.tex/.aux/g` > $auxfile;;
+
+    #-------
+    # case of a .xml file: write our own .aux file from <xref> tags
+    xml )
+        echo "\\relax" > $auxfile
+        # write the \citation{} commands
+        for cite in `awk -F "linkend=\"" '/<citation><xref linkend=\"/ { print $2 }' $file | cut -f1 -d"\""`
+          do
+          echo "\\citation{$cite}" >> $auxfile
+        done
+        # write the \bibstyle{} command
+        echo "\\bibstyle{dbalpha}" >> $auxfile
+
+        # write the \bibdata{} command
+        # look for .bib files in the current directory
+        printf "\\\bibdata{" >> $auxfile
+        # first counting pass
+        n=0; for bib in `ls *.bib | sed s/.bib//g`; do let "n+=1"; done
+        # second pass actually writes
+        count=0
+        for bib in `ls *.bib | sed s/.bib//g`
+        do
+          let "count+=1"
+          printf "$bib" >> $auxfile
+          if [ $count -ne $n ]
+              then
+              printf "," >> $auxfile
+          fi
+        done
+        echo "}" >> $auxfile;;
+
+    #-------
+    # case of a BibTeX .bib file: write our own .aux file from the entries
+    bib )
+        echo "\\relax" > $auxfile
+        # write the \citation{} commands
+        for cite in `awk -F { '/@[A-Za-z]*{/ { print $2 }' $file | cut -f1 -d,`
+        do
+          echo "\\citation{$cite}" >> $auxfile
+        done
+        # write the \bibstyle{} command
+        echo "\\bibstyle{dbalpha}" >> $auxfile
+        # write the \bibdata{} command
+        echo "\\bibdata{`echo \"$file\" | sed s/.bib//g`}" >> $auxfile;;
+
+    #-------
+    # unknown extension
+    *   )  error "Unknown file extension $ext.";;
+esac
+
+# generating the almost XML .bbl file using BibTeX
+bibtex -terse $auxfile 1>&2
+
+# outputting the DocBook XML to stdout
+if [ -n "$encoding" ]
+    then
+    echo "<?xml version=\"1.0\" encoding=\"$encoding\"?>"
+    if [ -n "$preamble" ]
+        then
+        echo $preamble
+    fi
+    cat $bblfile | bibdb-filter | iconv -f $def_enc -t $encoding
+else
+    echo "<?xml version=\"1.0\" encoding=\"$def_enc\"?>"
+    if [ -n "$preamble" ]
+        then
+        echo $preamble
+    fi
+    cat $bblfile | bibdb-filter
+fi
