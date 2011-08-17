@@ -1,19 +1,23 @@
 .PHONY:clean all install
 
+DESTDIR=/usr/bin
+TEXPATH=/usr/share/texmf/bibtex/bst
+
 all:bibdb-filter
 
 bibdb-filter:
 
 install:bibdb-filter
-	mkdir -p /usr/share/texmf/bibtex/bst
-	cp dbalpha{,5}.bst /usr/share/texmf/bibtex/bst/
+	test -d $(TEXPATH) || mkdir -p $(TEXPATH)
+	cp dbalpha{,5}.bst $(TEXPATH)/
 	mktexlsr
-	cp bibdb bibdb-filter /usr/bin/
+	test -d $(DESTDIR) || mkdir -p $(DESTDIR)
+	cp bibdb bibdb-filter $(DESTDIR)/
 
 uninstall:
-	rm -rf /usr/share/texmf/bibtex/bst/dbalpha{,5}.bst
+	rm -rf $(TEXPATH)/dbalpha{,5}.bst
 	mktexlsr
-	rm -rf /usr/bin/{bibdb,bibdb-filter} 
+	rm -rf $(DESTDIR)/{bibdb,bibdb-filter} 
 
 clean:
 	rm -rf bibdb-filter bibdb-filter.c 
