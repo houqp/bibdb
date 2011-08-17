@@ -13,7 +13,7 @@ install:bibdb-filter
 uninstall:
 	rm -rf /usr/share/texmf/bibtex/bst/dbalpha{,5}.bst
 	mktexlsr
-	rm -rf /usr/bin/{bibdb, bibdb-filter} 
+	rm -rf /usr/bin/{bibdb,bibdb-filter} 
 
 clean:
 	rm -rf bibdb-filter bibdb-filter.c 
