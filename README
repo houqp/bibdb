@@ -10,7 +10,9 @@ FILES
 - README                This file.
 - bibdb                 A Bash script
 - dbalpha.bst           A BibTeX style that outputs XML-looking data.
+- dbalpha5.bst          A BibTex style for docbook5
 - bibdb-filter.l        A Lex file for cleaning the output.
+- Makefile              Makefile for installation
 
 ********
 REQUIRES
