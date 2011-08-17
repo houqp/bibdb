@@ -1,6 +1,6 @@
 bibdb
 
-version 0.1
+version 0.1.2
 
 Translates BibTeX bibliographic entries to DocBook XML.
 
@@ -13,6 +13,7 @@ FILES
 - dbalpha5.bst          A BibTex style for docbook5
 - bibdb-filter.l        A Lex file for cleaning the output.
 - Makefile              Makefile for installation
+- CHANGELOG             CHANGELOG
 
 ********
 REQUIRES
