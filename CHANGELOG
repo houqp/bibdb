@@ -1,0 +1,15 @@
+2011-08-17 Qingping Hou <qingping.hou@gmail.com>
+
+  * Makefile: new added.
+
+  * dbalpha5.bst: new added, use xml:id in docbook5 
+  bibtex style file.
+  * bibdb:added -v option for docbook5 support.
+
+  * bibdb-filter.l:handle comma in author's name.
+
+  * bibdb:use utf-8 as default encoding.
+
+  * README: added make install part
+
+  * CHANGELOG: new added

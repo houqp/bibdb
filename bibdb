@@ -5,10 +5,16 @@
 # Command-line script for the translation of bibliographic items from BibTeX
 # to DocBook XML.
 #
-# version 0.1
+# version 0.1.2
 #
 # Sylvain Schmitz <schmitz@i3s.unice.fr>
 # Copyright (c) Laboratoire I3S -- http://www.i3s.unice.fr
+#
+# 8/17/2011
+#   Qingping Hou <qingping.hou@gmail.com>
+#   update to v0.1.2
+#   * use utf-8 as default encoding
+#   * added -v option
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -36,11 +42,13 @@ ERROR=65
 usage ()
 {
     echo "Translate BibTeX bibliographic entries to DocBook XML."
-    echo "Usage: `basename $0` [-e encoding] [-p preamble] file"
+    echo "Usage: `basename $0` [-e encoding] [-p preamble] [-v version] file"
     echo "  -e    Specify the encoding used as in iconv(1)."
     echo "        Defaults to $def_enc."
     echo "  -p    Add a preamble to the generated file."
     echo "        For example -p \"<\\!DOCTYPE bibliography PUBLIC \\\"-//OASIS/... >\"."
+    echo "  -v    Specify the version of docbook."
+    echo "        Defaults to docbook4. -v 5 will change to docbook5."
     echo "  file  If 'file' is a LaTeX generated .aux file or a LaTeX .tex file, only"
     echo "        generate entries for those present in the LaTeX source."
     echo "        If 'file' is a DocBook .xml file, only generate entries for those"
@@ -62,11 +70,12 @@ if [ $# -eq 0 ]
     error "Missing file name."
 fi
 
-while getopts ":e:p:" Option
+while getopts ":e:p:v:" Option
   do
   case $Option in
       e ) encoding=$OPTARG;;
       p ) preamble=$OPTARG;;
+      v ) version=$OPTARG;;
       - ) break;;
       * ) error "Unknown option $Option.";;
   esac
@@ -155,7 +164,7 @@ case $ext in
           echo "\\citation{$cite}" >> $auxfile
         done
         # write the \bibstyle{} command
-        echo "\\bibstyle{dbalpha}" >> $auxfile
+        echo "\\bibstyle{dbalpha$version}" >> $auxfile
         # write the \bibdata{} command
         echo "\\bibdata{`echo \"$file\" | sed s/.bib//g`}" >> $auxfile;;
 

@@ -90,9 +90,9 @@ FUNCTION {output.check}
 
 FUNCTION {bibentry.begin}
 { newline$
-  "<biblioentry role=''" swap$ * "'' id=''" * cite$ * "''>" * output
+  "<biblioentry role=''" swap$ * "'' xml:id=''" * cite$ * "''>" * output
   indent.level #1 + 'indent.level :=
-  "<abbrev id=''" cite$ * ".abbrev''>" * label * "</abbrev>" * output
+  "<abbrev xml:id=''" cite$ * ".abbrev''>" * label * "</abbrev>" * output
 }
 
 FUNCTION {bibentry.end}
@@ -1217,7 +1217,7 @@ ITERATE {forward.pass}
 REVERSE {reverse.pass}
 
 FUNCTION {begin.bib}
-{ "<bibliography>"  write$ newline$
+{ "<bibliography  xmlns='http://docbook.org/ns/docbook'>"  write$ newline$
   indent.level #1 + 'indent.level :=
 }
 

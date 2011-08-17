@@ -21,6 +21,16 @@ REQUIRES
 ************
 INSTALLATION
 
+Use make to install it automatically:
+
+  make install
+
+And uninstall it with:
+
+  make uninstall
+
+Or you can install it Manually:
+
 1) Untar to the directory of your choice.
 
 2) Build the output filter 'bibdb-filter'.
@@ -40,6 +50,8 @@ Usage: bibdb [-e encoding] [-p preamble] file
         Defaults to iso-8859-1.
   -p    Add a preamble to the generated file.
         For example -p "<\!DOCTYPE bibliography PUBLIC \"-//OASIS/... >".
+  -v    Specify the version of docbook.
+        Defaults to docbook4. -v 5 will change to docbook5.
   file  If 'file' is a LaTeX generated .aux file or a LaTeX .tex file, only
         generate entries for those present in the LaTeX source.
         If 'file' is a DocBook .xml file, only generate entries for those
