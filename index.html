@@ -1,0 +1,330 @@
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>BibDB: a BibTeX to DocBook translator</title>
+  <link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"/>
+  <meta name="DC.title" content="BibDB"/>
+  <meta name="DC.language" scheme="RFC3066" content="en-EN"/>
+  <meta name="DC.type" scheme="DCMITypes" content="Text"/>
+  <meta name="DC.format" scheme="IMT" content="application/xml"/>
+
+  <meta name="DC.identifier" scheme="URI" content="http://charybde.homeunix.org/~schmitz/code/bibdb/"/>
+  <meta name="DC.creator" content="Sylvain Schmitz"/>
+  <meta name="DC.description" content="A BibTeX to DocBook translator"/>
+  <meta name="DC.keywords" content="BibTeX,DocBook,bibliography,translation"/>
+  <style title="default" type="text/css">
+    p { text-align: justify; }
+  </style>
+</head>
+
+<body>
+  <h1>BibDB: a BibTeX to DocBook translator</h1>
+
+  <div id="preamble">
+    <p>Translates BibTeX bibliographic entries to
+    <a href="http://www.docbook.org">DocBook</a>
+    <abbr title="eXtensible Markup Language">XML</abbr>.</p>
+
+    <p>Latest version: 0.1.</p>
+  </div>
+
+  
+  <div id="navig">
+    <ul>
+      <li>
+        <a href="#feat" title="See why you should use BibDB.">Features</a>
+      </li>
+      <li>
+        <a href="#req" title="See the requirements of BibDB.">Requirements</a>
+      </li>
+
+      <li>
+        <a href="#inst" title="Learn how to install BibDB.">Installation</a>
+      </li>
+      <li>
+        <a href="#use" title="Learn how to use BibDB.">Usage</a>
+      </li>
+      <li>
+        <a href="#bugs" title="Bugs you won't need to report.">Known Bugs</a>
+
+      </li>
+      <li>
+        <a href="#auth" title="The author of BibDB.">Author</a>
+      </li>
+      <li>
+        <a href="#lic" title="See the license of BibDB.">License</a>
+      </li>
+    </ul>
+
+  </div>
+
+  <div class="entry">
+  <h2><a id="feat">Features</a></h2>
+  <p>BibDB uses BibTeX to generate
+  <abbr title="eXtensible Markup Language">XML</abbr> data using a
+  modified <tt>alpha</tt> style.</p>
+
+  <p>Here is a (slightly reformated) demonstration of BibDB:</p>
+  <pre>
+% cat file.bib
+@Book{au72,
+  author =       {Alfred V. Aho and Jeffrey D. Ullman},
+  editor =       {George Forsythe},
+  title =        {The Theory of Parsing, Translation, and Compiling},
+  publisher =    {Prentice Hall},
+  year =         {1972},
+  volume =       {I: Parsing},
+  series =       {Series in Automatic Computation},
+  address =      {Englewood Cliffs, New Jersey},
+  isbn =         {0-13-914556-7}
+}
+
+@Article{decidability,
+  author =       {H. B. {Hunt, III}},
+  title =        {On the Decidability of Grammar Problems},
+  journal =      {Journal of the ACM (JACM)},
+  volume =       {29},
+  number =       {2},
+  year =         {1982},
+  issn =         {0004-5411},
+  pages =        {429--447},
+  doi =          {http://doi.acm.org/10.1145/322307.322317},
+  publisher =    {ACM Press},
+}
+
+@book{sippu-2,
+  author =       {Seppo Sippu and Eljas Soisalon-Soininen},
+  title =        {Parsing Theory},
+  volume =       {II: {LR}($k$) and {LL}($k$) Parsing},
+  series =       {EATCS Monographs on Theoretical Computer Science},
+  publisher =    {Springer-Verlag},
+  year =         {1990}
+}
+% bibdb file.bib &gt; file.xml
+Warning--can't use both author and editor fields in au72
+(There was 1 warning)
+% cat file.xml
+&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;
+&lt;bibliography&gt;
+
+  &lt;biblioentry role="book" id="au72"&gt;
+
+    &lt;abbrev id="au72.abbrev"&gt;AU72&lt;/abbrev&gt;
+    &lt;authorgroup&gt;
+      &lt;author&gt;
+        &lt;firstname&gt;Alfred V.&lt;/firstname&gt;
+        &lt;surname&gt;Aho&lt;/surname&gt;
+
+      &lt;/author&gt;
+      &lt;author&gt;
+        &lt;firstname&gt;Jeffrey D.&lt;/firstname&gt;
+        &lt;surname&gt;Ullman&lt;/surname&gt;
+      &lt;/author&gt;
+
+    &lt;/authorgroup&gt;
+    &lt;title&gt;The Theory of Parsing, Translation, and Compiling&lt;/title&gt;
+    &lt;subtitle role="series"&gt;Series in Automatic Computation&lt;/subtitle&gt;
+    &lt;seriesvolnum&gt;I: Parsing&lt;/seriesvolnum&gt;
+
+    &lt;publisher&gt;Prentice Hall&lt;/publisher&gt;
+    &lt;address&gt;Englewood Cliffs, New Jersey&lt;/address&gt;
+    &lt;pubdate&gt;1972&lt;/pubdate&gt;
+  &lt;/biblioentry&gt;
+
+  &lt;biblioentry role="article" id="decidability"&gt;
+    &lt;abbrev id="decidability.abbrev"&gt;Hun82&lt;/abbrev&gt;
+    &lt;biblioset role="article"&gt;
+      &lt;author&gt;&lt;firstname&gt;H. B.&lt;/firstname&gt;&lt;surname&gt;Hunt, III&lt;/surname&gt;&lt;/author&gt;
+
+      &lt;title&gt;On the decidability of grammar problems&lt;/title&gt;
+      &lt;pagenums&gt;429--447&lt;/pagenums&gt;
+      &lt;bibliosource class="doi"&gt;http://doi.acm.org/10.1145/322307.322317&lt;/bibliosource&gt;
+    &lt;/biblioset&gt;
+
+    &lt;biblioset role="journal"&gt;
+      &lt;title&gt;Journal of the ACM (JACM)&lt;/title&gt;
+      &lt;volumenum&gt;29&lt;/volumenum&gt;&lt;issuenum&gt;2&lt;/issuenum&gt;
+      &lt;pubdate&gt;1982&lt;/pubdate&gt;
+
+    &lt;/biblioset&gt;
+  &lt;/biblioentry&gt;
+
+  &lt;biblioentry role="book" id="sippu-2"&gt;
+    &lt;abbrev id="sippu-2.abbrev"&gt;SSS90&lt;/abbrev&gt;
+    &lt;authorgroup&gt;
+
+      &lt;author&gt;
+        &lt;firstname&gt;Seppo&lt;/firstname&gt;
+        &lt;surname&gt;Sippu&lt;/surname&gt;
+      &lt;/author&gt;
+      &lt;author&gt;
+
+        &lt;firstname&gt;Eljas&lt;/firstname&gt;
+        &lt;surname&gt;Soisalon-Soininen&lt;/surname&gt;
+      &lt;/author&gt;
+    &lt;/authorgroup&gt;
+    &lt;title&gt;Parsing Theory&lt;/title&gt;
+
+    &lt;subtitle role="series"&gt;EATCS Monographs on Theoretical Computer Science&lt;/subtitle&gt;
+    &lt;seriesvolnum&gt;II: LR(k) and LL(k) Parsing&lt;/seriesvolnum&gt;
+    &lt;publisher&gt;Springer-Verlag&lt;/publisher&gt;
+    &lt;pubdate&gt;1990&lt;/pubdate&gt;
+
+  &lt;/biblioentry&gt;
+
+&lt;/bibliography&gt;
+  </pre>  
+  </div>
+
+  <div class="entry">
+  <h2><a id="req">Requirements</a></h2>
+  <ul>
+
+    <li>
+      <a href="http://www.ctan.org/tex-archive/biblio/bibtex/">BibTeX</a>,
+      <a href="http://www.gnu.org/software/bash/">Bash</a> 
+      and <a href="http://www.gnu.org/software/sed/">sed</a>,
+      plus <a href="http://www.latex-project.org/">LaTeX</a>,
+      <a href="http://www.gnu.org/software/awk/">awk</a>
+      and <a href="http://www.gnu.org/software/libiconv/">iconv</a>
+
+      depending on the options used to run BibDB.
+    </li>
+    <li>
+      To compile BibDB, lex
+      or <a href="http://www.gnu.org/software/flex/">flex</a>
+      and <a href="http://gcc.gnu.org">a C compiler</a>.
+    </li>
+  </ul>
+  </div>
+
+  <div class="entry">
+  <h2><a id="inst">Installation</a></h2>
+  <ul>
+    <li>
+      Download <a href="bibdb-latest.tar.gz">the latest version</a>.
+    </li>
+    <li>
+
+      Untar to the directory of your choice:
+      <tt>cd /dir/of/my/choice ; tar xvfz
+      /path/to/bibdb-xxx.tar.gz</tt>.
+    </li>
+    <li>
+      Build the output filter <tt>bibdb-filter</tt>:
+      <ul>
+        <li>
+          If you have a <a href="http://www.gnu.org/software/make/"
+          title="A Make program which allows implicit rules :).">Make</a>
+
+          which allows implicit rules, run <tt>make bibdb-filter</tt>.
+        </li>
+        <li>
+          If not, run <tt>lex bibdb-filter.l</tt> followed by <tt>cc
+          -o bibdb-filter lex.yy.c</tt>.
+        </li>
+      </ul>
+
+    </li>
+    <li>
+      Put <tt>bibdb</tt> and <tt>bibdb-filter</tt> somewhere in your
+      <tt>$PATH</tt>.
+    </li>
+    <li>
+
+      Put <tt>dbalpha.bst</tt> somewhere in your TeX path.
+    </li>
+  </ul>
+  </div>
+
+  <div class="entry">
+  <h2><a id="use">Usage</a></h2>
+  <p><tt>bibdb [-e encoding] [-p preamble] file</tt></p>
+
+  <dl>
+    <dt><tt>-e</tt></dt>
+    <dd>Specify the encoding used as in <a
+    href="http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html" title="Iconv manual page.">iconv(1)</a>.  Defaults to iso-8859-1.</dd>
+    <dt><tt>-p</tt></dt>
+    <dd>Add a preamble to the generated file.  For instance <tt>-p
+    "&lt;\!DOCTYPE bibliography PUBLIC \"-//OASIS/... &gt;"</tt>.</dd>
+
+    <dt><tt>file</tt></dt>
+    <dd>Depending on the file extension:
+      <ul>
+        <li>
+          If <tt>file</tt> is a LaTeX generated <tt>.aux</tt> file or
+          a LaTeX <tt>.tex</tt> file, only generate entries for those
+          present in the LaTeX source.
+        </li>
+
+        <li>
+          If <tt>file</tt> is a DocBook <tt>.xml</tt> file, only
+          generate entries for those present in the DocBook file.  It
+          looks for <tt>.bib</tt> files in the directory holding
+          <tt>file</tt>.
+        </li>
+        <li>
+
+          If <tt>file</tt> is a BibTeX <tt>.bib</tt> file, generate
+          entries for the entire bibliography file.
+        </li>
+    </ul></dd>
+  </dl>
+  </div>
+
+  <div class="entry">
+
+  <h2><a id="bugs">Known Bugs</a></h2>
+  <ul>
+    <li>
+      Does not replace '&lt;' and '&gt;' by the
+      <abbr title="eXtensible Markup Language">XML</abbr> entities
+      '&amp;lt;' and '&amp;gt;'.
+    </li>
+
+    <li>
+      Replaces '~' in
+      <abbr title="Universal Ressource Identifiers">URIs</abbr> as if
+      they were insecable spaces.
+    </li>
+    <li>
+      Loads of error messages if your BibTeX files use the
+      <tt>@preamble</tt> or the <tt>@string</tt> constructs.
+    </li>
+
+  </ul>
+  </div>
+  
+  <div class="entry">
+  <h2><a id="auth">Author</a></h2>
+  <p>Sylvain Schmitz &lt;schmitz at i3s dot unice dot fr&gt;</p>
+  <p>Copyright &copy; 2004 <a href="http://www.i3s.unice.fr">Laboratoire I3S</a></p>
+
+  </div>
+
+  <div class="entry">
+  <h2><a id="lic">License</a></h2>
+  <p>
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to
+  deal in the Software without restriction, including without limitation the
+  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+  sell copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+  </p>
+  <p>
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
+  </p>
+
+  <p>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+  THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+  AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  </p>
+  </div>
+</body>
+</html>
