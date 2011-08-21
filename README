@@ -1,0 +1,112 @@
+bibdb
+
+version 0.1.2
+
+Translates BibTeX bibliographic entries to DocBook XML.
+
+*****
+FILES
+
+- README                This file.
+- bibdb                 A Bash script
+- dbalpha.bst           A BibTeX style that outputs XML-looking data.
+- dbalpha5.bst          A BibTex style for docbook5
+- bibdb-filter.l        A Lex file for cleaning the output.
+- Makefile              Makefile 
+- CHANGELOG             CHANGELOG
+
+********
+REQUIRES
+
+- BibTeX, Bash and sed, plus LaTeX, awk and iconv
+- For compiling, lex or flex and a C compiler.
+
+************
+INSTALLATION
+
+Use make to install it automatically:
+
+  make install
+
+And uninstall it with:
+
+  make uninstall
+
+Both install and uninstall target support DESTDIR and TEXPATH variables, which will specify install dir and tex path respectively. For instance, you can use them like this:
+
+  make DESTDIR="/usr/local/bin" TEXPATH="/usr/share/texmf/bibtex/bst" install
+
+Or you can install it Manually:
+
+1) Untar to the directory of your choice.
+
+2) Build the output filter 'bibdb-filter'.
+   If you have a Make which allows implicit rules, run 'make bibdb-filter'.
+   If not, run 'lex bibdb-filter.l' followed by 'cc -o bibdb-filter lex.yy.c'.
+
+3) Put 'bibdb' and 'bibdb-filter' somewhere in your $PATH.
+
+4) Put 'dbalpha.bst' somewhere in your TeX path.
+
+*****
+USAGE
+
+
+Usage: bibdb [-e encoding] [-p preamble] file
+  -e    Specify the encoding used as in iconv(1).
+        Defaults to iso-8859-1.
+  -p    Add a preamble to the generated file.
+        For example -p "<\!DOCTYPE bibliography PUBLIC \"-//OASIS/... >".
+  -v    Specify the version of docbook.
+        Defaults to docbook4. -v 5 will change to docbook5.
+  file  If 'file' is a LaTeX generated .aux file or a LaTeX .tex file, only
+        generate entries for those present in the LaTeX source.
+        If 'file' is a DocBook .xml file, only generate entries for those
+        present in the DocBook file.  It looks for .bib files in the directory
+        holding 'file'.
+        If 'file' is a BibTeX .bib file, generate entries for the entire
+        bibliography file.
+
+**********
+KNOWN BUGS
+
+- Does not replace '<' and '>' by the XML entities '&lt;' and '&gt;'.
+- Replaces '~' in URIs as if they were insecable spaces.
+- Loads of error messages if your BibTeX files use the @preamble or the @string
+  constructs.
+
+*******
+WEBSITE
+
+http://houqp.github.com/bibdb/
+
+******
+AUTHOR
+
+Sylvain Schmitz <schmitz@i3s.unice.fr>
+Copyright (c) Laboratoire I3S -- http://www.i3s.unice.fr
+
+*********
+MAINTAINER
+
+Qingping Hou <qingping.hou [AT] gmail (dot) com>
+
+*******
+LICENSE
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

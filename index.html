@@ -24,7 +24,7 @@
     <a href="http://www.docbook.org">DocBook</a>
     <abbr title="eXtensible Markup Language">XML</abbr>.</p>
 
-    <p>Latest version: 0.1.</p>
+    <p>Latest version: 0.1.2</p>
   </div>
 
   
@@ -49,6 +49,9 @@
       </li>
       <li>
         <a href="#auth" title="The author of BibDB.">Author</a>
+      </li>
+      <li>
+        <a href="#main" title="The maintainer of BibDB.">Maintainer</a>
       </li>
       <li>
         <a href="#lic" title="See the license of BibDB.">License</a>
@@ -201,37 +204,10 @@ Warning--can't use both author and editor fields in au72
   <h2><a id="inst">Installation</a></h2>
   <ul>
     <li>
-      Download <a href="bibdb-latest.tar.gz">the latest version</a>.
+      Download <a href="download/bibdb-0.1.2.tar.gz">the latest version</a>.
     </li>
     <li>
-
-      Untar to the directory of your choice:
-      <tt>cd /dir/of/my/choice ; tar xvfz
-      /path/to/bibdb-xxx.tar.gz</tt>.
-    </li>
-    <li>
-      Build the output filter <tt>bibdb-filter</tt>:
-      <ul>
-        <li>
-          If you have a <a href="http://www.gnu.org/software/make/"
-          title="A Make program which allows implicit rules :).">Make</a>
-
-          which allows implicit rules, run <tt>make bibdb-filter</tt>.
-        </li>
-        <li>
-          If not, run <tt>lex bibdb-filter.l</tt> followed by <tt>cc
-          -o bibdb-filter lex.yy.c</tt>.
-        </li>
-      </ul>
-
-    </li>
-    <li>
-      Put <tt>bibdb</tt> and <tt>bibdb-filter</tt> somewhere in your
-      <tt>$PATH</tt>.
-    </li>
-    <li>
-
-      Put <tt>dbalpha.bst</tt> somewhere in your TeX path.
+      Read the instructions in <a href="README">README</a>.
     </li>
   </ul>
   </div>
@@ -247,6 +223,10 @@ Warning--can't use both author and editor fields in au72
     <dt><tt>-p</tt></dt>
     <dd>Add a preamble to the generated file.  For instance <tt>-p
     "&lt;\!DOCTYPE bibliography PUBLIC \"-//OASIS/... &gt;"</tt>.</dd>
+
+    <dt><tt>-v</tt></dt>    
+    <dd>Specify the version of docbook.
+    Defaults to docbook4. -v 5 will change to docbook5.</dd>
 
     <dt><tt>file</tt></dt>
     <dd>Depending on the file extension:
@@ -264,7 +244,6 @@ Warning--can't use both author and editor fields in au72
           <tt>file</tt>.
         </li>
         <li>
-
           If <tt>file</tt> is a BibTeX <tt>.bib</tt> file, generate
           entries for the entire bibliography file.
         </li>
@@ -300,6 +279,11 @@ Warning--can't use both author and editor fields in au72
   <p>Sylvain Schmitz &lt;schmitz at i3s dot unice dot fr&gt;</p>
   <p>Copyright &copy; 2004 <a href="http://www.i3s.unice.fr">Laboratoire I3S</a></p>
 
+  </div>
+
+  <div class="entry">
+  <h2><a id="main">Maintainer</a></h2>
+  <p>Qingping Hou &lt;qingping(dot)hou {AT} gmail(dot).com&lt;</p>
   </div>
 
   <div class="entry">
