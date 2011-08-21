@@ -1,3 +1,9 @@
+2011-08-21 Qingping Hou <qingping.hou@gmail.com>
+ 
+  * Makefile: added dist target
+  * README: update for v0.1.2
+
+
 2011-08-17 Qingping Hou <qingping.hou@gmail.com>
 
   * Makefile: new added.

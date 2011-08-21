@@ -12,7 +12,7 @@ FILES
 - dbalpha.bst           A BibTeX style that outputs XML-looking data.
 - dbalpha5.bst          A BibTex style for docbook5
 - bibdb-filter.l        A Lex file for cleaning the output.
-- Makefile              Makefile for installation
+- Makefile              Makefile 
 - CHANGELOG             CHANGELOG
 
 ********
@@ -31,6 +31,10 @@ Use make to install it automatically:
 And uninstall it with:
 
   make uninstall
+
+Both install and uninstall target support DESTDIR and TEXPATH variables, which will specify install dir and tex path respectively. For instance, you can use them like this:
+
+  make DESTDIR="/usr/local/bin" TEXPATH="/usr/share/texmf/bibtex/bst" install
 
 Or you can install it Manually:
 
@@ -74,13 +78,15 @@ KNOWN BUGS
 *******
 WEBSITE
 
-http://charybde.homeunix.org/~schmitz/code/bibdb/
+http://houqp.github.com/bibdb/
 
 ******
 AUTHOR
 
 Sylvain Schmitz <schmitz@i3s.unice.fr>
 Copyright (c) Laboratoire I3S -- http://www.i3s.unice.fr
+
+Qingping Hou <qingping.hou [AT] gmail (dot) com>
 
 *******
 LICENSE
